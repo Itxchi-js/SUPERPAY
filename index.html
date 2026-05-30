@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SuperPay</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --blue: #1a73e8;
+    --green: #00c853;
+    --bg: #f0f4ff;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --sub: #6b7280;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .phone {
+    width: 390px;
+    min-height: 844px;
+    background: #f0f4ff;
+    border-radius: 48px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    background: white;
+    padding: 14px 24px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+  .status-right { display: flex; gap: 6px; align-items: center; font-size: 11px; }
+
+  /* HEADER */
+  .header {
+    background: white;
+    padding: 12px 20px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e8eaf0;
+  }
+  .logo { display: flex; align-items: center; gap: 8px; }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #1a73e8, #0d47a1);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: white; font-weight: 900;
+  }
+  .logo-text { font-size: 20px; font-weight: 900; color: #1a1a2e; letter-spacing: -0.5px; }
+  .logo-text span { color: var(--blue); }
+  .header-icons { display: flex; gap: 14px; font-size: 20px; }
+
+  /* BALANCE CARD */
+  .balance-card {
+    margin: 16px;
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+    border-radius: 24px;
+    padding: 24px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .balance-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 150px; height: 150px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .balance-card::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -20px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .balance-label { font-size: 13px; opacity: 0.8; font-weight: 600; margin-bottom: 6px; }
+  .balance-amount {
+    font-size: 38px; font-weight: 900; letter-spacing: -1px;
+    transition: all 0.4s ease;
+  }
+  .balance-amount .rupee { font-size: 28px; }
+  .balance-sub { font-size: 12px; opacity: 0.7; margin-top: 4px; font-weight: 600; }
+  .balance-row { display: flex; justify-content: space-between; align-items: flex-end; }
+  .upi-id { font-size: 12px; opacity: 0.75; font-weight: 600; }
+
+  /* QUICK ACTIONS */
+  .section { padding: 0 16px 16px; }
+  .section-title { font-size: 14px; font-weight: 800; color: var(--sub); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .action-btn {
+    background: white;
+    border-radius: 16px;
+    padding: 14px 8px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: none;
+  }
+  .action-btn:active { transform: scale(0.94); }
+  .action-icon { font-size: 22px; }
+  .action-label { font-size: 11px; font-weight: 700; color: var(--text); text-align: center; }
+
+  /* SEND MONEY */
+  .send-section {
+    margin: 0 16px 16px;
+    background: white;
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .send-title { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 14px; }
+  .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .input-field {
+    flex: 1;
+    border: 2px solid #e8eaf0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .input-field:focus { border-color: var(--blue); }
+  .input-field::placeholder { color: #b0b8c8; font-weight: 600; }
+  .amount-input { width: 120px; flex: none; }
+
+  .send-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #1a73e8, #0d47a1);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 16px rgba(26,115,232,0.35);
+  }
+  .send-btn:active { transform: scale(0.97); }
+
+  /* TRANSACTIONS */
+  .txn-section {
+    margin: 0 16px 24px;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .txn-header {
+    padding: 14px 16px 10px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #f0f2f8;
+  }
+  .txn-title { font-size: 14px; font-weight: 800; color: var(--text); }
+  .txn-see-all { font-size: 12px; font-weight: 700; color: var(--blue); }
+
+  .txn-item {
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid #f8f9fc;
+    transition: background 0.1s;
+  }
+  .txn-item:last-child { border-bottom: none; }
+  .txn-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: white; flex-shrink: 0;
+  }
+  .txn-info { flex: 1; }
+  .txn-name { font-size: 13px; font-weight: 800; color: var(--text); }
+  .txn-time { font-size: 11px; color: var(--sub); font-weight: 600; margin-top: 2px; }
+  .txn-amount { font-size: 14px; font-weight: 900; }
+  .txn-amount.debit { color: #e53935; }
+  .txn-amount.credit { color: #00c853; }
+
+  /* SUCCESS OVERLAY */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+    border-radius: 48px;
+  }
+  .overlay.show { opacity: 1; pointer-events: all; }
+
+  .success-card {
+    background: white;
+    border-radius: 28px;
+    padding: 32px 28px;
+    width: 320px;
+    text-align: center;
+    transform: scale(0.8) translateY(30px);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .overlay.show .success-card { transform: scale(1) translateY(0); }
+
+  .success-icon {
+    width: 72px; height: 72px;
+    background: #e8f5e9;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 36px;
+  }
+  .success-title { font-size: 22px; font-weight: 900; color: #1a1a2e; margin-bottom: 4px; }
+  .success-amount { font-size: 36px; font-weight: 900; color: #00c853; margin: 8px 0; }
+  .success-to { font-size: 13px; color: var(--sub); font-weight: 600; margin-bottom: 4px; }
+  .success-name { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 16px; }
+  .success-txnid { font-size: 11px; color: #b0b8c8; font-weight: 600; margin-bottom: 20px; }
+
+  .success-close {
+    width: 100%;
+    background: linear-gradient(135deg, #1a73e8, #0d47a1);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px; font-weight: 800;
+    cursor: pointer;
+  }
+
+  /* FAKE WATERMARK */
+  .fake-badge {
+    position: absolute;
+    top: 90px; right: -28px;
+    background: #ff1744;
+    color: white;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 4px 32px;
+    transform: rotate(45deg);
+    letter-spacing: 1px;
+    z-index: 50;
+  }
+
+  @media (max-width: 420px) {
+    .phone { width: 100vw; min-height: 100vh; border-radius: 0; }
+    body { align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="fake-badge">FAKE APP</div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span>9:41</span>
+    <div class="status-right">
+      <span>📶</span><span>🔋</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">S</div>
+      <div class="logo-text">Super<span>Pay</span></div>
+    </div>
+    <div class="header-icons">
+      <span>🔔</span>
+      <span>👤</span>
+    </div>
+  </div>
+
+  <!-- Balance -->
+  <div class="balance-card">
+    <div class="balance-label">Total Balance</div>
+    <div class="balance-row">
+      <div>
+        <div class="balance-amount" id="balanceDisplay">
+          <span class="rupee">₹</span><span id="balanceNum">4,60,000</span>
+        </div>
+        <div class="balance-sub">Available in SuperPay</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:11px;opacity:0.7;font-weight:700">UPI ID</div>
+        <div class="upi-id">user@superpay</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="section">
+    <div class="actions-grid">
+      <button class="action-btn"><div class="action-icon">📤</div><div class="action-label">Send</div></button>
+      <button class="action-btn"><div class="action-icon">📥</div><div class="action-label">Request</div></button>
+      <button class="action-btn"><div class="action-icon">📱</div><div class="action-label">Mobile</div></button>
+      <button class="action-btn"><div class="action-icon">⚡</div><div class="action-label">Bill Pay</div></button>
+    </div>
+  </div>
+
+  <!-- Send Money -->
+  <div class="send-section">
+    <div class="send-title">💸 Send Money</div>
+    <div class="input-row">
+      <input class="input-field" type="text" id="recipientName" placeholder="Name / UPI ID" />
+      <input class="input-field amount-input" type="number" id="sendAmount" placeholder="₹ Amount" />
+    </div>
+    <button class="send-btn" onclick="sendMoney()">Send Money →</button>
+  </div>
+
+  <!-- Transactions -->
+  <div class="txn-section">
+    <div class="txn-header">
+      <div class="txn-title">Recent Transactions</div>
+      <div class="txn-see-all">See All</div>
+    </div>
+    <div id="txnList">
+      <div class="txn-item">
+        <div class="txn-avatar" style="background:linear-gradient(135deg,#ff6b6b,#ee5a24)">R</div>
+        <div class="txn-info">
+          <div class="txn-name">Rahul Sharma</div>
+          <div class="txn-time">Today, 2:30 PM</div>
+        </div>
+        <div class="txn-amount debit">-₹500</div>
+      </div>
+      <div class="txn-item">
+        <div class="txn-avatar" style="background:linear-gradient(135deg,#a29bfe,#6c5ce7)">P</div>
+        <div class="txn-info">
+          <div class="txn-name">Priya Patel</div>
+          <div class="txn-time">Yesterday, 11:00 AM</div>
+        </div>
+        <div class="txn-amount credit">+₹1,200</div>
+      </div>
+      <div class="txn-item">
+        <div class="txn-avatar" style="background:linear-gradient(135deg,#55efc4,#00b894)">A</div>
+        <div class="txn-info">
+          <div class="txn-name">Amazon Pay</div>
+          <div class="txn-time">23 May, 9:15 AM</div>
+        </div>
+        <div class="txn-amount debit">-₹2,499</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div class="overlay" id="overlay">
+    <div class="success-card">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Payment Sent!</div>
+      <div class="success-amount" id="successAmount">₹0</div>
+      <div class="success-to">Sent to</div>
+      <div class="success-name" id="successName">—</div>
+      <div class="success-txnid" id="successTxnId">Txn ID: SP00000000</div>
+      <button class="success-close" onclick="closeOverlay()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let balance = 460000;
+
+  function formatINR(n) {
+    return n.toLocaleString('en-IN');
+  }
+
+  function randomTxnId() {
+    return 'SP' + Math.random().toString(36).substr(2,10).toUpperCase();
+  }
+
+  function sendMoney() {
+    const name = document.getElementById('recipientName').value.trim();
+    const amount = parseFloat(document.getElementById('sendAmount').value);
+
+    if (!name) { alert('Please enter a name or UPI ID'); return; }
+    if (!amount || amount <= 0) { alert('Please enter a valid amount'); return; }
+    if (amount > balance) { alert('Insufficient balance 😅'); return; }
+
+    balance -= amount;
+    document.getElementById('balanceNum').textContent = formatINR(balance);
+
+    document.getElementById('successAmount').textContent = '₹' + formatINR(amount);
+    document.getElementById('successName').textContent = name;
+    document.getElementById('successTxnId').textContent = 'Txn ID: ' + randomTxnId();
+
+    // Add to transaction list
+    const colors = [
+      'linear-gradient(135deg,#fd79a8,#e84393)',
+      'linear-gradient(135deg,#fdcb6e,#e17055)',
+      'linear-gradient(135deg,#74b9ff,#0984e3)',
+      'linear-gradient(135deg,#ff7675,#d63031)'
+    ];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const initial = name[0].toUpperCase();
+
+    const now = new Date();
+    const timeStr = 'Today, ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0') + ' ' + (now.getHours() >= 12 ? 'PM' : 'AM');
+
+    const txnHtml = `
+      <div class="txn-item" style="animation: fadeIn 0.3s ease">
+        <div class="txn-avatar" style="background:${color}">${initial}</div>
+        <div class="txn-info">
+          <div class="txn-name">${name}</div>
+          <div class="txn-time">${timeStr}</div>
+        </div>
+        <div class="txn-amount debit">-₹${formatINR(amount)}</div>
+      </div>`;
+
+    document.getElementById('txnList').insertAdjacentHTML('afterbegin', txnHtml);
+
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('recipientName').value = '';
+    document.getElementById('sendAmount').value = '';
+  }
+
+  function closeOverlay() {
+    document.getElementById('overlay').classList.remove('show');
+  }
+</script>
+</body>
+</html>
